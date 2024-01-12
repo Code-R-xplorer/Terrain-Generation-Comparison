@@ -69,5 +69,82 @@ namespace FFT
 
             return noiseMap;
         }
+
+        public static double[,] GenerateWhiteNoiseGrid(int mapWidth, int mapDepth, float scale)
+        {
+            double[,] noiseMap = new double[mapWidth, mapDepth];
+            
+            for (int y = 0; y < mapDepth; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    noiseMap[x, y] = UnityEngine.Random.Range(-1f,1f) / scale;
+                }
+            }
+
+            return noiseMap;
+        }
+        
+        public static double[,] GenerateTileablePerlinNoiseGrid(int mapWidth, int mapHeight, float scale)
+        {
+            double[,] noiseMap = new double[mapWidth, mapHeight];
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    // Wrap the sample coordinates
+                    float sampleX = (x / scale) % mapWidth;
+                    float sampleY = (y / scale) % mapHeight;
+
+                    // Use Mathf.PerlinNoise with wrapped coordinates
+                    noiseMap[x, y] = Mathf.PerlinNoise(sampleX, sampleY);
+                }
+            }
+
+            return noiseMap;
+        }
+        
+        public static double[,] GenerateTileableWhiteNoiseGrid(int mapWidth, int mapDepth, float scale)
+        {
+            double[,] noiseMap = new double[mapWidth, mapDepth];
+
+            // Generate internal noise
+            for (int y = 0; y < mapDepth - 1; y++)
+            {
+                for (int x = 0; x < mapWidth - 1; x++)
+                {
+                    noiseMap[x, y] = UnityEngine.Random.Range(-1f, 1f) / scale;
+                }
+            }
+
+            // Mirror the edges
+            for (int y = 0; y < mapDepth; y++)
+            {
+                noiseMap[mapWidth - 1, y] = noiseMap[0, y]; // Mirror right edge to the left edge
+            }
+
+            for (int x = 0; x < mapWidth; x++)
+            {
+                noiseMap[x, mapDepth - 1] = noiseMap[x, 0]; // Mirror bottom edge to the top edge
+            }
+
+            return noiseMap;
+        }
+        
+        public static double[,] GenerateTileableSimpleNoiseGrid(int mapWidth, int mapDepth, float scale)
+        {
+            double[,] noiseMap = new double[mapWidth, mapDepth];
+            
+            for (int y = 0; y < mapDepth; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    noiseMap[x, y] = noise.snoise(new float2((x / scale) % mapWidth, (y / scale) % mapDepth));
+                }
+            }
+
+            return noiseMap;
+        }
     }
 }

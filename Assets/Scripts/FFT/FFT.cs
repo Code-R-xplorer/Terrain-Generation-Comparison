@@ -115,19 +115,6 @@ namespace FFT
             int rows = data.GetLength(0);
             int cols = data.GetLength(1);
 
-            // Apply IFFT to each row
-            Complex[] row = new Complex[cols];
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                    row[j] = data[i, j];
-
-                CooleyTukeyIFFT(row); // Apply 1D IFFT
-
-                for (int j = 0; j < cols; j++)
-                    data[i, j] = row[j];
-            }
-
             // Apply IFFT to each column
             Complex[] col = new Complex[rows];
             for (int j = 0; j < cols; j++)
@@ -139,6 +126,19 @@ namespace FFT
 
                 for (int i = 0; i < rows; i++)
                     data[i, j] = col[i];
+            }
+            
+            // Apply IFFT to each row
+            Complex[] row = new Complex[cols];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                    row[j] = data[i, j];
+
+                CooleyTukeyIFFT(row); // Apply 1D IFFT
+
+                for (int j = 0; j < cols; j++)
+                    data[i, j] = row[j];
             }
         }
         

@@ -536,12 +536,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1793b7edaf73415dbbb4782ad13d369f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mean: 0
-  stdDev: 1
-  mapWidth: 128
-  mapDepth: 128
+  mapWidth: 32
+  mapDepth: 32
   roughness: 2
-  scale: 0.3
+  scale: 0.22
+  scaleX: 1
+  scaleZ: 1
+  sigma: 10
+  cutoffFrequencyLow: 0.5
+  cutoffFrequencyHigh: 1
+  kernelSize: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

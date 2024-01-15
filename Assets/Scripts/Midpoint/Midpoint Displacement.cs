@@ -23,7 +23,7 @@ public class MidpointDisplacement : MonoBehaviour
     //3, divide it into sixteenths
 
 
-    MeshGeneratorCopy MG;
+    MeshGenerator MG;
 
     int MaxRecursion;
 
@@ -32,7 +32,7 @@ public class MidpointDisplacement : MonoBehaviour
     int BoxWidth;
 
     bool RunOnce = false;
-
+    bool ReachedLimit = false;
 
     public float Roughness = 2;
 
@@ -41,8 +41,8 @@ public class MidpointDisplacement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MG = GetComponent<MeshGeneratorCopy>();
-        MG.FuckItImWritingMyOwnCreateShapeFunction(MapWidth,MapDepth);
+        MG = GetComponent<MeshGenerator>();
+        MG.AltCreateShapeFunction(MapWidth,MapDepth);
 
     }
 
@@ -58,25 +58,7 @@ public class MidpointDisplacement : MonoBehaviour
 
     void GenerateMidpointDisplacement()
     {
-        //print(GetComponent<MeshFilter>().mesh.vertices.Length);
-        //print(MG.GetVertices().Length);
-
-        //MG.SetVertexHeight(MG.GetVertices().Length / 2, 20);
-        //MG.SetVertexHeight(MapWidth * MapDepth / 2, 10);
-
-
-        //print(MG.GetVertices().Length);
-        
-
-
-
-        ////print(MG.GetVertices()[(MapWidth + 1) * (MapDepth + 1) / 2].y);
-
-        //MG.SetVertexHeight(30, 40);
-        //MG.SetVertexHeight(0, -40);
-        //MG.SetVertexHeight(MG.GetVertices().Length - 31, 10000);
-        //MG.SetVertexHeight(MG.GetVertices().Length - 1, -20);
-
+        ReachedLimit = false;
 
         RecursionLevel = 0;
 
@@ -85,14 +67,22 @@ public class MidpointDisplacement : MonoBehaviour
         float Displacement = MapWidth * (1 / Mathf.Pow(2, Roughness));
 
         //while (RecursionLevel < 5)
-        while (RecursionLevel < 5)
+        while (RecursionLevel < 100)
         {
 
             BoxesFunction(RecursionLevel, Displacement);
+
+
+            if (ReachedLimit)
+            {
+                RecursionLevel = 100;
+            }
+
             Displacement *= (1 / Mathf.Pow(2, Roughness));
 
-            print(Displacement);
+            //print(Displacement);
             RecursionLevel++;
+
 
 
         }
@@ -109,7 +99,7 @@ public class MidpointDisplacement : MonoBehaviour
         //MG.SetVertexHeight(120, -10000);
         //MG.SetVertexHeight(240, 1000000);
 
-        MG.TestForMidpoint();
+        MG.MidpointUpdate();
 
 
         //get the value it's being divided by in each instance, and then work it out from that
@@ -141,6 +131,7 @@ public class MidpointDisplacement : MonoBehaviour
 
         if (BoxWidth * BoxDepth <= 1)
         {
+            ReachedLimit = true;   
             return;
         }
 

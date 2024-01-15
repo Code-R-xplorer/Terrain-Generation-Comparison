@@ -273,6 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4431889b9094d541a27c56262d28831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MG: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,8 +452,8 @@ GameObject:
   - component: {fileID: 2007923334}
   - component: {fileID: 2007923333}
   - component: {fileID: 2007923332}
-  - component: {fileID: 2007923336}
   - component: {fileID: 2007923335}
+  - component: {fileID: 2007923336}
   m_Layer: 0
   m_Name: Mesh Generator
   m_TagString: Untagged
@@ -537,8 +538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 387f48f7adccd3b45bb6033f38faab22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapWidth: 45
-  MapDepth: 45
+  MapWidth: 128
+  MapDepth: 128
   Roughness: 1
 --- !u!114 &2007923336
 MonoBehaviour:
@@ -549,7 +550,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2007923330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 877e6fc9a2d508e4baa6c579ba03e2e3, type: 3}
+  m_Script: {fileID: 11500000, guid: 177f95b99eef72242a335f10772869d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807

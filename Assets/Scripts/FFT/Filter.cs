@@ -28,8 +28,7 @@ namespace FFT
             return fftData;
         }
         
-        private static double[,] GeneratePowerLawFilter(int width, int height, double a)
-        {
+        private static double[,] GeneratePowerLawFilter(int width, int height, double a) {
             // Initialize the filter array
             double[,] filter = new double[width, height];
 

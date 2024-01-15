@@ -17,7 +17,7 @@ namespace FFT
                 for (int j = 0; j < cols; j++)
                     row[j] = data[i, j];
 
-                CooleyTukeyFFT(row); // Apply 1D FFT
+                IterativeFFT(row); // Apply 1D FFT
 
                 for (int j = 0; j < cols; j++)
                     data[i, j] = row[j];
@@ -30,7 +30,7 @@ namespace FFT
                 for (int i = 0; i < rows; i++)
                     col[i] = data[i, j];
 
-                CooleyTukeyFFT(col); // Apply 1D FFT
+                IterativeFFT(col); // Apply 1D FFT
 
                 for (int i = 0; i < rows; i++)
                     data[i, j] = col[i];
@@ -38,23 +38,23 @@ namespace FFT
         }
         
         
-        private static void CooleyTukeyFFT(Complex[] samples) {
+        private static void IterativeFFT(Complex[] samples) {
             // n is the total number of samples in the array
             int n = samples.Length;
 
             // Return immediately if there's only one sample, as no FFT is needed
             if (n <= 1) return;
     
-            // Check if n is a power of 2, which is required for the Cooley-Tukey FFT
+            // Check if n is a power of 2, so the algorithm will be most efficient
             if ((n & (n - 1)) != 0) throw new ArgumentException("Sample count must be a power of 2.");
     
-            // Apply the bit reversal method to the samples, reordering them
+            // Apply the bit reversal method to the samples, reordering themS
             Complex[] a = Utils.BitReversal(samples);
     
             // Main FFT computation loop
             for (int s = 1; s <= Utils.Log2(n); s++)
             {
-                int m = 1 << s; // m is set to 2^s, used for segmenting the sample array
+                int m = (int)Math.Pow(2, s);
                 Complex wm = Complex.Exp(new Complex(0, -2 * Math.PI / m)); // Twiddle factor
 
                 for (int k = 0; k < n; k += m)
@@ -62,6 +62,7 @@ namespace FFT
                     Complex w = 1;
                     for (int j = 0; j < m / 2; j++)
                     {
+                        // Butterfly Operation
                         // Compute the FFT for the pair of elements
                         Complex t = w * a[k + j + m / 2]; // Twiddle multiplication
                         Complex u = a[k + j];
@@ -94,7 +95,7 @@ namespace FFT
                 for (int i = 0; i < rows; i++)
                     col[i] = data[i, j];
 
-                CooleyTukeyIFFT(col); // Apply 1D IFFT
+                IterativeIFFT(col); // Apply 1D IFFT
 
                 for (int i = 0; i < rows; i++)
                     data[i, j] = col[i];
@@ -107,14 +108,14 @@ namespace FFT
                 for (int j = 0; j < cols; j++)
                     row[j] = data[i, j];
 
-                CooleyTukeyIFFT(row); // Apply 1D IFFT
+                IterativeIFFT(row); // Apply 1D IFFT
 
                 for (int j = 0; j < cols; j++)
                     data[i, j] = row[j];
             }
         }
 
-        private static void CooleyTukeyIFFT(Complex[] samples)
+        private static void IterativeIFFT(Complex[] samples)
         {
             int n = samples.Length;
 
@@ -123,7 +124,7 @@ namespace FFT
                 samples[i] = Complex.Conjugate(samples[i]);
 
             // Forward FFT
-            CooleyTukeyFFT(samples);
+            IterativeFFT(samples);
 
             // Conjugate the complex numbers again
             for (int i = 0; i < n; i++)

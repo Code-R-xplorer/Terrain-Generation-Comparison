@@ -42,21 +42,21 @@ public class MidpointDisplacement : MonoBehaviour
     void Start()
     {
         MG = GetComponent<MeshGenerator>();
-        MG.AltCreateShapeFunction(MapWidth,MapDepth);
+        MG.AltCreateShapeFunction(MapWidth, MapDepth);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!RunOnce)
-        {
-            RunOnce = true;
-            GenerateMidpointDisplacement();
-        }
+        //if (!RunOnce)
+        //{
+        //    RunOnce = true;
+        //    GenerateMidpointDisplacement();
+        //}
     }
 
-    void GenerateMidpointDisplacement()
+    public void GenerateMidpointDisplacement()
     {
         ReachedLimit = false;
 
@@ -131,6 +131,7 @@ public class MidpointDisplacement : MonoBehaviour
 
         if (BoxWidth * BoxDepth <= 1)
         {
+            print(R);
             ReachedLimit = true;   
             return;
         }

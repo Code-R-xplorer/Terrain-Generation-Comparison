@@ -452,8 +452,8 @@ GameObject:
   - component: {fileID: 2007923334}
   - component: {fileID: 2007923333}
   - component: {fileID: 2007923332}
-  - component: {fileID: 2007923335}
   - component: {fileID: 2007923336}
+  - component: {fileID: 2007923335}
   m_Layer: 0
   m_Name: Mesh Generator
   m_TagString: Untagged
@@ -550,7 +550,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2007923330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 177f95b99eef72242a335f10772869d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 877e6fc9a2d508e4baa6c579ba03e2e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807

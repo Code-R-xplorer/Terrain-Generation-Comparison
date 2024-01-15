@@ -5,78 +5,6 @@ namespace FFT
 {
     public class FFT
     {
-        // Assumes n is a power of 2
-        public static void CooleyTukeyFFT(Complex[] samples)
-        {
-            int n = samples.Length;
-            if (n <= 1) return;
-
-            // Check if n is a power of 2
-            if ((n & (n - 1)) != 0)
-                throw new ArgumentException("Sample count must be a power of 2.");
-
-            // Bit reversal of the given array
-            Complex[] a = BitReversal(samples);
-
-            // The Cooley-Tukey recursive FFT
-            for (int s = 1; s <= Log2(n); s++)
-            {
-                int m = 1 << s; // m = 2^s
-                Complex wm = Complex.Exp(new Complex(0, -2 * Math.PI / m)); // Principal m-th root of unity
-
-                for (int k = 0; k < n; k += m)
-                {
-                    Complex w = 1;
-                    for (int j = 0; j < m / 2; j++)
-                    {
-                        Complex t = w * a[k + j + m / 2];
-                        Complex u = a[k + j];
-                        a[k + j] = u + t;
-                        a[k + j + m / 2] = u - t;
-                        w *= wm;
-                    }
-                }
-            }
-
-            for (int i = 0; i < n; i++)
-                samples[i] = a[i];
-        }
-
-        private static int Log2(int n)
-        {
-            int log = 0;
-            while (n > 1)
-            {
-                log++;
-                n /= 2;
-            }
-            return log;
-        }
-
-        private static Complex[] BitReversal(Complex[] array)
-        {
-            int n = array.Length;
-            Complex[] a = new Complex[n];
-            for (int i = 0; i < n; i++)
-            {
-                int rev = ReverseBits(i, Log2(n));
-                a[rev] = array[i];
-            }
-            return a;
-        }
-
-        private static int ReverseBits(int n, int bitsLength)
-        {
-            int reversed = 0;
-            for (int i = 0; i < bitsLength; i++)
-            {
-                reversed <<= 1;
-                reversed |= n & 1;
-                n >>= 1;
-            }
-            return reversed;
-        }
-        
         public static void Perform2DFFT(Complex[,] data)
         {
             int rows = data.GetLength(0);
@@ -107,6 +35,50 @@ namespace FFT
                 for (int i = 0; i < rows; i++)
                     data[i, j] = col[i];
             }
+        }
+        
+        
+        private static void CooleyTukeyFFT(Complex[] samples) {
+            // n is the total number of samples in the array
+            int n = samples.Length;
+
+            // Return immediately if there's only one sample, as no FFT is needed
+            if (n <= 1) return;
+    
+            // Check if n is a power of 2, which is required for the Cooley-Tukey FFT
+            if ((n & (n - 1)) != 0) throw new ArgumentException("Sample count must be a power of 2.");
+    
+            // Apply the bit reversal method to the samples, reordering them
+            Complex[] a = Utils.BitReversal(samples);
+    
+            // Main FFT computation loop
+            for (int s = 1; s <= Utils.Log2(n); s++)
+            {
+                int m = 1 << s; // m is set to 2^s, used for segmenting the sample array
+                Complex wm = Complex.Exp(new Complex(0, -2 * Math.PI / m)); // Twiddle factor
+
+                for (int k = 0; k < n; k += m)
+                {
+                    Complex w = 1;
+                    for (int j = 0; j < m / 2; j++)
+                    {
+                        // Compute the FFT for the pair of elements
+                        Complex t = w * a[k + j + m / 2]; // Twiddle multiplication
+                        Complex u = a[k + j];
+                
+                        // Update the elements with their new values
+                        a[k + j] = u + t;
+                        a[k + j + m / 2] = u - t;
+                
+                        // Update the twiddle factor for next iteration
+                        w *= wm;
+                    }
+                }
+            }
+
+            // Copy the computed FFT values back to the original samples array
+            for (int i = 0; i < n; i++)
+                samples[i] = a[i];
         }
         
         // Inverse 2D FFT
@@ -141,8 +113,8 @@ namespace FFT
                     data[i, j] = row[j];
             }
         }
-        
-        public static void CooleyTukeyIFFT(Complex[] samples)
+
+        private static void CooleyTukeyIFFT(Complex[] samples)
         {
             int n = samples.Length;
 

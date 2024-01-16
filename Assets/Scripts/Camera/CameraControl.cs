@@ -2,8 +2,11 @@ using FFT;
 using Mesh_Gen;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 
@@ -23,6 +26,23 @@ public class CameraControl : MonoBehaviour
     float RotateSpeed = 30.0f;
 
     bool FFTOn = false;
+
+    public GameObject InputBlock;
+
+    public TMP_InputField TerrainSizeField;
+    public TMP_InputField RoughnessField;
+
+
+    public TMP_InputField TerrainScaleField;
+
+    public TMP_Dropdown NoiseTypeDrop;
+
+    public TMP_InputField GaussianStdDev;
+
+    public TMP_InputField WhiteNoiseScale;
+
+    public UnityEngine.UI.Slider PowerLawFilterBar;
+
 
 
 
@@ -76,10 +96,63 @@ public class CameraControl : MonoBehaviour
         print(FFTOn);
         if (FFTOn)
         {
-            MG.GetComponent<TerrainGenerator>().GenerateTerrain(); 
+            if (int.TryParse(TerrainSizeField.text, out int Size))
+            {
+                //set the map depth and width here
+                //print(Size);
+                MG.GetComponent<TerrainGenerator>().mapSize = Size;
+            }
+
+            if (float.TryParse(TerrainScaleField.text, out float Scale))
+            {
+                MG.GetComponent<TerrainGenerator>().mapScale = Size;
+            }
+
+
+            if (NoiseTypeDrop.value == 0)
+            {
+                //gaussian noise
+                MG.GetComponent<TerrainGenerator>().noiseType = Utils.NoiseTypes.Gaussian;
+                if (float.TryParse(GaussianStdDev.text, out float S))
+                {
+                    MG.GetComponent<TerrainGenerator>().stdDev = S;
+                }
+            }
+            else
+            {
+                //white noise
+                MG.GetComponent<TerrainGenerator>().noiseType = Utils.NoiseTypes.White;
+                if (float.TryParse(WhiteNoiseScale.text, out float S))
+                {
+                    MG.GetComponent<TerrainGenerator>().scale = S;
+                }
+            }
+
+
+            MG.GetComponent<TerrainGenerator>().alpha = PowerLawFilterBar.value;
+
+
+            MG.GetComponent<TerrainGenerator>().GenerateTerrain();
+
+
         }
         else
         {
+
+            if (int.TryParse(TerrainSizeField.text, out int Size))
+            {
+                //set the map depth and width here
+                print(Size);
+                MG.GetComponent<MidpointDisplacement>().MapDepth = Size;
+                MG.GetComponent<MidpointDisplacement>().MapWidth = Size;
+            }
+
+            if (float.TryParse(RoughnessField.text, out float R))
+            {
+                MG.GetComponent<MidpointDisplacement>().Roughness = R;
+                print(R);
+            }
+            //print("G");
             MG.GetComponent<MidpointDisplacement>().GenerateMidpointDisplacement();
         }
     }
@@ -88,7 +161,19 @@ public class CameraControl : MonoBehaviour
     {
         FFTOn = !FFTOn;
 
-        print(FFTOn);
+        if (FFTOn)
+        {
+            InputBlock.transform.GetChild(0).gameObject.SetActive(false);
+            InputBlock.transform.GetChild(1).gameObject.SetActive(true);
+        }
+        else
+        {
+
+            InputBlock.transform.GetChild(0).gameObject.SetActive(true);
+            InputBlock.transform.GetChild(1).gameObject.SetActive(false);
+        }
+
+        //print(FFTOn);
     }
 
 
@@ -96,4 +181,29 @@ public class CameraControl : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+
+    public void UpdateSlider()
+    {
+        float DisplayValue = Mathf.Round(PowerLawFilterBar.value * 100) / 100;
+        PowerLawFilterBar.transform.GetChild(4).GetComponent<TextMeshProUGUI>().SetText(DisplayValue.ToString());
+    }
+
+    public void UpdateDropdown()
+    {
+        if (NoiseTypeDrop.value == 0)
+        {
+
+            GaussianStdDev.gameObject.SetActive(true);
+            WhiteNoiseScale.gameObject.SetActive(false);
+
+        }
+        else
+        {
+
+            GaussianStdDev.gameObject.SetActive(false);
+            WhiteNoiseScale.gameObject.SetActive(true);
+        }
+    }
+
 }

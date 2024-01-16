@@ -10,6 +10,8 @@ public class CameraButtons : MonoBehaviour
     public GameObject InputBlock;
     public Button InstructionButton;
     public Button InputFieldButton;
+
+    public GameObject quitButton;
         
 
     //GameObject MidpointInputBlock;
@@ -45,15 +47,22 @@ public class CameraButtons : MonoBehaviour
     public void InstructionToggle()
     {
         InstructionBlock.SetActive(!InstructionBlock.activeSelf);
-        if (!InputBlock.activeSelf)
+        if (!InstructionBlock.activeSelf)
         {
             InstructionButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText("Show instructions");
+            quitButton.SetActive(false);
         }
         else
         {
             InstructionButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().SetText("Hide instructions");
+            quitButton.SetActive(true);
 
         }
+    }
+    
+    public void Quit()
+    {
+        Application.Quit();
     }
 
 }

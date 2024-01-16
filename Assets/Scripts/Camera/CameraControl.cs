@@ -22,8 +22,10 @@ public class CameraControl : MonoBehaviour
 {
     Camera Cam;
     public GameObject MG;
-    float SpeedMultiplier = 1.5f;
-    float RotateSpeed = 30.0f;
+    public float SpeedMultiplier = 1.5f;
+    public float ShiftSpeedMultiplier = 3f;
+    private float _speedMultiplier;
+    public float RotateSpeed = 30.0f;
 
     bool FFTOn = false;
 
@@ -33,7 +35,7 @@ public class CameraControl : MonoBehaviour
     public TMP_InputField RoughnessField;
 
 
-    public TMP_InputField TerrainScaleField;
+    public TMP_Dropdown TerrainScaleDropdown;
 
     public TMP_Dropdown NoiseTypeDrop;
 
@@ -73,15 +75,18 @@ public class CameraControl : MonoBehaviour
 
         if (Input.GetKey("left shift"))
         {
-            SpeedMultiplier = 3.0f;
+            _speedMultiplier = ShiftSpeedMultiplier;
+            // SpeedMultiplier = 3.0f;
         }
         else
         {
-            SpeedMultiplier = 1.5f;
+            // SpeedMultiplier = 1.5f;
+            _speedMultiplier = SpeedMultiplier;
+            
         }
 
 
-        Vector3 Movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Elevation"), Input.GetAxis("Vertical")) * Time.deltaTime * SpeedMultiplier;
+        Vector3 Movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Elevation"), Input.GetAxis("Vertical")) * Time.deltaTime * _speedMultiplier;
         transform.Translate(Movement);
 
 
@@ -103,11 +108,20 @@ public class CameraControl : MonoBehaviour
                 MG.GetComponent<TerrainGenerator>().mapSize = Size;
             }
 
-            if (float.TryParse(TerrainScaleField.text, out float Scale))
+            var size = TerrainScaleDropdown.value switch
             {
-                MG.GetComponent<TerrainGenerator>().mapScale = Size;
-            }
-
+                1 => 1f,
+                2 => 0.5f,
+                3 => 0.25f,
+                4 => 0.125f,
+                5 => 0.0625f,
+                6 => 0.03125f,
+                
+                7 => 0.015625f,
+                _ => 1f
+            };
+            
+            MG.GetComponent<TerrainGenerator>().mapScale = size;
 
             if (NoiseTypeDrop.value == 0)
             {

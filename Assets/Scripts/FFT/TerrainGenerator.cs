@@ -38,7 +38,7 @@ namespace FFT
 
         public void GenerateTerrain()
         {
-            Noise.SetRandomSeed(100);
+            // Noise.SetRandomSeed(100);
             
             // Generate the noise grid based on user input
             double[,] noiseGrid = noiseType switch
